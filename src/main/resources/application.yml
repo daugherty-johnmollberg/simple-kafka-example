@@ -1,0 +1,21 @@
+com:
+  ameripride:
+    kafka:
+      streams:
+        test-copy-stream:
+          state-dir: kafka-streams
+          application-id: test-copy-stream
+          source-topic: test-raw
+          dest-topic: test-compact-1
+          auto-offset-reset: latest
+          commit-interval-ms: 10000
+          deserialization-error-handler: org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
+
+      producers:
+        test-producer:
+          application-id: test-producer
+          dest-topic: test-raw
+
+      bootstrap-servers: localhost:9092
+      schema-registry: http://localhost:8081
+      application-server: localhost:8072
