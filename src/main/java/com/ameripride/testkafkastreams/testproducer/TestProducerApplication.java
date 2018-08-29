@@ -3,6 +3,7 @@ package com.ameripride.testkafkastreams.testproducer;
 import com.ameripride.testkafkastreams.producer.Producer;
 import com.ameripride.testkafkastreams.producer.ProducerImpl;
 import com.ameripride.testkafkastreams.producer.ProducerProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.streams.KeyValue;
@@ -17,6 +18,7 @@ import java.util.List;
 import static org.apache.kafka.streams.KeyValue.pair;
 
 @SpringBootApplication
+@Slf4j
 public class TestProducerApplication {
 
     public static void main(String[] args) {
@@ -38,11 +40,13 @@ public class TestProducerApplication {
     private <K, V> KafkaProducer buildProducer(ProducerProperties properties, List<KeyValue<K, V>> records) {
         KafkaProducer<K, V> producer = new KafkaProducer<>(properties.buildProperties());
 
-        records.forEach(record ->
-                producer.send(new ProducerRecord<>(
-                        properties.getDestTopic(),
-                        record.key,
-                        record.value)));
+        records.forEach(record -> {
+            log.info(String.format("Producing record: key: %s value: %s", record.key, record.value));
+            producer.send(new ProducerRecord<>(
+                    properties.getDestTopic(),
+                    record.key,
+                    record.value));
+        });
 
         return producer;
     }

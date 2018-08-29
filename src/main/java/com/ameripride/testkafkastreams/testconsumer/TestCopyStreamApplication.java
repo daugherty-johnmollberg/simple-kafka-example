@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Produced;
 import org.springframework.boot.SpringApplication;
@@ -43,6 +44,10 @@ public class TestCopyStreamApplication {
                     properties.getDestTopic()));
 
             myBuilder.stream(properties.getSourceTopic(), Consumed.with(Serdes.String(), Serdes.String()))
+                    .map(((key, value) -> {
+                        log.trace(String.format("copying record: key: %s value: %s", key, value));
+                        return KeyValue.pair(key, value);
+                    }))
                     .to(properties.getDestTopic(), Produced.with(Serdes.String(), Serdes.String()));
 
             return new KafkaStreams(myBuilder.build(), properties.buildProperties());
