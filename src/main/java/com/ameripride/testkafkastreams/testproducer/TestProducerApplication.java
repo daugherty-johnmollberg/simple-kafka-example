@@ -82,14 +82,20 @@ public class TestProducerApplication {
 
         public void run() {
             String key = getKey();
+            int intKey = Integer.parseInt(key);
             String value = String.format("test %s", key);
 
-            log.info(String.format("Producing record: key: %s value: %s", key, value));
-            producer.send(new ProducerRecord<>(
-                    properties.getDestTopic(),
-                    key,
-                    value));
+            if ((intKey > 5 && intKey < 11) || intKey > 11) {
+                log.info(String.format("Skipping record %s", key));
+            } else {
+                log.info(String.format("Producing record: key: %s value: %s", key, value));
+                producer.send(new ProducerRecord<>(
+                        properties.getDestTopic(),
+                        key,
+                        value));
+            }
         }
+
 
         private String getKey() {
             return String.valueOf(recordCounter++);
