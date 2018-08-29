@@ -45,7 +45,12 @@ public class TestCopyStreamApplication {
 
             myBuilder.stream(properties.getSourceTopic(), Consumed.with(Serdes.String(), Serdes.String()))
                     .map(((key, value) -> {
-                        log.trace(String.format("copying record: key: %s value: %s", key, value));
+                        log.info(String.format(
+                                "copying record from %s to %s: key: %s value: %s",
+                                properties.getSourceTopic(),
+                                properties.getDestTopic(),
+                                key,
+                                value));
                         return KeyValue.pair(key, value);
                     }))
                     .to(properties.getDestTopic(), Produced.with(Serdes.String(), Serdes.String()));

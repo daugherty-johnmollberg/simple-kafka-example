@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static org.apache.kafka.streams.KeyValue.pair;
 
@@ -21,12 +23,14 @@ import static org.apache.kafka.streams.KeyValue.pair;
 @Slf4j
 public class TestProducerApplication {
 
+    private static int recordCounter = 1;
+
     public static void main(String[] args) {
         SpringApplication.run(TestProducerApplication.class, args);
     }
 
-    @Bean
-    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer-1")
+//    @Bean
+//    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer-1")
     Producer testProducer1() {
         List<KeyValue<String, String>> records = Arrays.asList(
                 pair("1", "test1"),
@@ -35,6 +39,12 @@ public class TestProducerApplication {
         );
 
         return new ProducerImpl(properties -> buildProducer(properties, records));
+    }
+
+    @Bean
+    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer-2")
+    Producer testProducer2() {
+        return new ProducerImpl(this::buildContinuousProducer);
     }
 
     private <K, V> KafkaProducer buildProducer(ProducerProperties properties, List<KeyValue<K, V>> records) {
@@ -49,5 +59,40 @@ public class TestProducerApplication {
         });
 
         return producer;
+    }
+
+    private KafkaProducer<String, String> buildContinuousProducer(ProducerProperties properties) {
+        KafkaProducer<String, String> producer = new KafkaProducer<>(properties.buildProperties());
+
+        Timer timer = new Timer();
+        timer.schedule(new TimedProduceRecord(producer, properties), 0, 60000);
+
+        return producer;
+    }
+
+    private class TimedProduceRecord extends TimerTask {
+        private final ProducerProperties properties;
+
+        private final KafkaProducer<String, String> producer;
+
+        TimedProduceRecord(KafkaProducer<String, String> producer, ProducerProperties properties) {
+            this.producer = producer;
+            this.properties = properties;
+        }
+
+        public void run() {
+            String key = getKey();
+            String value = String.format("test %s", key);
+
+            log.info(String.format("Producing record: key: %s value: %s", key, value));
+            producer.send(new ProducerRecord<>(
+                    properties.getDestTopic(),
+                    key,
+                    value));
+        }
+
+        private String getKey() {
+            return String.valueOf(recordCounter++);
+        }
     }
 }

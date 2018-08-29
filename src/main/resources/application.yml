@@ -13,13 +13,16 @@ com:
 
         default:
           state-dir: kafka-streams
-          auto-offset-reset: earliest
+          auto-offset-reset: latest
           commit-interval-ms: 10000
           deserialization-error-handler: org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
 
       producers:
         test-producer-1:
           application-id: test-producer-1
+          dest-topic: test-raw-1
+        test-producer-2:
+          application-id: test-producer-2
           dest-topic: test-raw-1
 
       bootstrap-servers: localhost:9092
