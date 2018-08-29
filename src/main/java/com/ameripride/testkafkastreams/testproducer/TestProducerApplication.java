@@ -24,8 +24,8 @@ public class TestProducerApplication {
     }
 
     @Bean
-    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer")
-    Producer testProducer() {
+    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer-1")
+    Producer testProducer1() {
         List<KeyValue<String, String>> records = Arrays.asList(
                 pair("1", "test1"),
                 pair("2", "test2"),

@@ -2,19 +2,25 @@ com:
   ameripride:
     kafka:
       streams:
-        test-copy-stream:
-          state-dir: kafka-streams
-          application-id: test-copy-stream
-          source-topic: test-raw
+        test-consumer-1:
+          application-id: test-consumer-1
+          source-topic: test-raw-1
           dest-topic: test-compact-1
+        test-consumer-2:
+          application-id: test-consumer-2
+          source-topic: test-compact-1
+          dest-topic: test-compact-2
+
+        default:
+          state-dir: kafka-streams
           auto-offset-reset: earliest
           commit-interval-ms: 10000
           deserialization-error-handler: org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
 
       producers:
-        test-producer:
-          application-id: test-producer
-          dest-topic: test-raw
+        test-producer-1:
+          application-id: test-producer-1
+          dest-topic: test-raw-1
 
       bootstrap-servers: localhost:9092
       schema-registry: http://localhost:8081

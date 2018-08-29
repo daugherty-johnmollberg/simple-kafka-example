@@ -22,8 +22,14 @@ public class TestCopyStreamApplication {
     }
 
     @Bean
-    @ConfigurationProperties("com.ameripride.kafka.streams.test-copy-stream")
-    public Stream testCopyStream() {
+    @ConfigurationProperties("com.ameripride.kafka.streams.test-consumer-1")
+    public Stream testConsumer1() {
+        return this.buildCopyStream();
+    }
+
+    @Bean
+    @ConfigurationProperties("com.ameripride.kafka.streams.test-consumer-2")
+    public Stream testConsumer2() {
         return this.buildCopyStream();
     }
 
