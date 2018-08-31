@@ -34,6 +34,9 @@ public class StreamProperties extends BaseKafkaProperties {
     @Value("${com.ameripride.kafka.streams.default.state-dir:}")
     private String stateDir;
 
+    @Value("${com.ameripride.kafka.streams.default.poll-ms:}")
+    private Long pollMs;
+
     public Properties buildProperties() {
         final Properties streamsConfiguration = new Properties();
 
@@ -51,6 +54,8 @@ public class StreamProperties extends BaseKafkaProperties {
         streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, this.getCommitIntervalMs());
 
         streamsConfiguration.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDir());
+
+        streamsConfiguration.put(StreamsConfig.POLL_MS_CONFIG, this.getPollMs());
 
         // Behavior for bad messages, kafka default is log and shutdown stream. Application default will be to
         // log and continue processing subsequent messages

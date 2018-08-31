@@ -13,9 +13,10 @@ com:
 
         default:
           state-dir: kafka-streams
-          auto-offset-reset: latest
+          auto-offset-reset: earliest
           commit-interval-ms: 10000
           deserialization-error-handler: org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
+          poll-ms: 5000
 
       producers:
         test-producer-1:

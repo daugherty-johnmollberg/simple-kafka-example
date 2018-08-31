@@ -29,8 +29,8 @@ public class TestProducerApplication {
         SpringApplication.run(TestProducerApplication.class, args);
     }
 
-//    @Bean
-//    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer-1")
+    @Bean
+    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer-1")
     Producer testProducer1() {
         List<KeyValue<String, String>> records = Arrays.asList(
                 pair("1", "test1"),
@@ -41,8 +41,8 @@ public class TestProducerApplication {
         return new ProducerImpl(properties -> buildProducer(properties, records));
     }
 
-    @Bean
-    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer-2")
+//    @Bean
+//    @ConfigurationProperties("com.ameripride.kafka.producers.test-producer-2")
     Producer testProducer2() {
         return new ProducerImpl(this::buildContinuousProducer);
     }
